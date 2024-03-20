@@ -1,6 +1,8 @@
+using Day03.DAL.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,17 @@ namespace Day03.MVC.PL
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
+			//services.AddTransient<ApplicationDbContext>();
+			//services.AddSingleton<ApplicationDbContext>();
+
+			// services.AddScoped<ApplicationDbContext>();
+			//services.AddScoped<DbContextOptions<ApplicationDbContext>>();
+			// ==>
+			services.AddDbContext<ApplicationDbContext>(
+				//contextLifetime : ServiceLifetime.Scoped,  //Default
+				//optionsLifetime : ServiceLifetime.Scoped   //Default
+				options => { options.UseSqlServer("Server=.;Database=MVCApplication;Trusted_Connection=True"); }
+				);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
