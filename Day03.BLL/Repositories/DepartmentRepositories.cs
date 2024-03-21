@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Day03.BLL.Repositories
 {
-	internal class DepartmentRepositories : IDepartmentRepositories
+	public class DepartmentRepositories : IDepartmentRepositories
 	{
 		private readonly ApplicationDbContext _DbContext;
 		public DepartmentRepositories(ApplicationDbContext dbContext) //Ask Clr for Creating Object from "ApplicationDbContext"

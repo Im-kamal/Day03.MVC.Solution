@@ -1,3 +1,5 @@
+using Day03.BLL.Interfaces;
+using Day03.BLL.Repositories;
 using Day03.DAL.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +39,7 @@ namespace Day03.MVC.PL
 				//optionsLifetime : ServiceLifetime.Scoped   //Default
 				options => { options.UseSqlServer("Server=.;Database=MVCApplication;Trusted_Connection=True"); }
 				);
+			services.AddScoped<IDepartmentRepositories,DepartmentRepositories>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
