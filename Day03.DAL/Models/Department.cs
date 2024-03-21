@@ -12,6 +12,8 @@ namespace Day03.DAL.Models
 		public int Id { get; set; }
 		public string Code { get; set; }
 		public string Name { get; set; }
-        public DateTime DateOfCreation { get; set; }
+
+		[Display(Name= "Date Of Creation")]
+        public DateTime DateOfCreation { get; set; } 
     }
 }
