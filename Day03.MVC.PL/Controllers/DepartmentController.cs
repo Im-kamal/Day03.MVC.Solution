@@ -17,7 +17,8 @@ namespace Day03.MVC.PL.Controllers
 		}
         public IActionResult Index()
 		{
-			return View();
+			var departments= _DepartmentsRepo.GetAll(); 
+			return View(departments);
 		}
 	}  
 }
