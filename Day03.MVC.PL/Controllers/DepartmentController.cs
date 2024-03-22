@@ -38,5 +38,21 @@ namespace Day03.MVC.PL.Controllers
             }
 			return View(department );
         }
+
+
+        // /Department/Details/10
+        // /Department/Details
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if (!id.HasValue)       // is null
+                return BadRequest();    //Helper Method from ControllerBase   //400
+            var department = _DepartmentsRepo.Get(id.Value);
+
+            if (department is null)
+                return NotFound();       //404
+
+            return View(department);
+        }
     }  
 }
