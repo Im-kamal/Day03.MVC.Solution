@@ -13,7 +13,7 @@ namespace Day03.MVC.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepositories _DepartmentsRepo;
-        private readonly IWebHostEnvironment _env;
+        private readonly IHostEnvironment _env;
 
         public DepartmentController(IDepartmentRepositories departmentRepo, IWebHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
         {
