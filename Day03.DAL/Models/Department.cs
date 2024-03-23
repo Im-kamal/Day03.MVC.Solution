@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Day03.DAL.Models
 {
-	public class Department
+	public class Department:ModelBase
 	{
-		public int Id { get; set; }
+	
 		public string Code { get; set; }
 		public string Name { get; set; }
 

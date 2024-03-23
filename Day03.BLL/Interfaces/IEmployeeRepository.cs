@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Day03.BLL.Interfaces
 {
-	public interface IDepartmentRepositories:IGenericRepository<Department>
-	{
-		
+	public interface IEmployeeRepository:IGenericRepository<Employee>
+	{ 
+		IQueryable<Employee> GetEmployeeByaddress(string address);
 	}
 }

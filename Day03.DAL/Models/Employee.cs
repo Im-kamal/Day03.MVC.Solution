@@ -22,9 +22,9 @@ namespace Day03.DAL.Models
 		FullTime=1,
 		PartTime=2
 	}
-	public class Employee
+	public class Employee:ModelBase
 	{
-		public int Id { get; set; }
+		
 
 		[Required]
 		[MaxLength(50, ErrorMessage = "Max Length of name is 50 Chars")]
