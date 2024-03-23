@@ -78,6 +78,7 @@ namespace Day03.MVC.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute]int id,Department department)
         {
             if(id!=department.Id)
@@ -103,5 +104,34 @@ namespace Day03.MVC.PL.Controllers
                 return View(department);    
             }
         }
+
+
+        // /Department/Delete/10
+        // /Department/Delete
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            return Details(id, "Delete");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Department department)
+        {
+            try
+            {
+                _DepartmentsRepo.Delete(department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                if (_env.IsDevelopment())
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                else
+                    ModelState.AddModelError(string.Empty, "An Error During Update The Department");
+                return View(department);
+            }
+        }
+
     }
 }
