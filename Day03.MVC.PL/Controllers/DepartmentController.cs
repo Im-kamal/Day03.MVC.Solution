@@ -27,7 +27,7 @@ namespace Day03.MVC.PL.Controllers
         }
 
         public IActionResult Create()
-        {
+        { 
             return View();
         }
 

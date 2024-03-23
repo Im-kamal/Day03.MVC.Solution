@@ -24,6 +24,7 @@ namespace Day03.DAL.Data
 		}
 
 		public DbSet<Department> Departments { get; set; }
+		public DbSet<Employee> Employees { get; set; }
 
     }
 }
