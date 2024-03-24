@@ -47,7 +47,7 @@ namespace Day03.MVC.PL.Controllers
         // /Department/Details/10
         // /Department/Details
         [HttpGet]
-        public IActionResult Details(int? id, string ViewName = "Details ")
+        public IActionResult Details(int? id, string ViewName = "Details")
         {
             if (!id.HasValue)       // is null
                 return BadRequest();    //Helper Method from ControllerBase   //400
