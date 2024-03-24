@@ -59,9 +59,9 @@ namespace Day03.MVC.PL.Controllers
             return View(ViewName, department);
         }
 
-        // /Department/Edit/10
-        // /Department/Edit
-        [HttpGet]
+		// /Department/Edit/10
+		// /Department/Edit
+		[HttpGet]
         public IActionResult Edit(int? id)
         {
             #region The same code in Details => Not Recomended
