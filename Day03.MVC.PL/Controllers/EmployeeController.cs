@@ -22,6 +22,14 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Index()
 		{
+			// Binding Through View's Dictionary : Transfer Data from Action To View => [One Way]
+			// 
+			//1.ViewData
+			ViewData["Message"] = "Hello ViewData";
+
+			//2.ViewBag
+			ViewBag.Message = "Hello ViewBag";
+
 			var employees= _employeesRepo.GetAll();
 			return View(employees);
 		}
