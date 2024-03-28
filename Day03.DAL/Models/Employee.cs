@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -58,5 +59,11 @@ namespace Day03.DAL.Models
         public DateTime CreationDate { get; set; }
 
 		public bool IsDeleted { get; set; } = false;
+
+        public int? DepartmentId { get; set; }  //Forign Key (FK)
+
+		//[InverseProperty(nameof(Models.Department.Employees))]
+        //Navigtional Property [ONE]
+        public Department Department { get; set; }
     }
 }
