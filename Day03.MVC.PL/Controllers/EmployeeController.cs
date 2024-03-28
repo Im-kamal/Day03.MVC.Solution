@@ -12,11 +12,13 @@ namespace Day03.MVC.PL.Controllers
 	{
 
 		private readonly IEmployeeRepository _employeesRepo;
+		//private readonly IDepartmentRepositories _departmentRepo;
 		private readonly IHostEnvironment _env;
 
-		public EmployeeController(IEmployeeRepository employeetRepo, IHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
+		public EmployeeController(IEmployeeRepository employeetRepo,/*IDepartmentRepositories departmentRepo,*/ IHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
 		{
 			_employeesRepo = employeetRepo;
+			//_departmentRepo = departmentRepo;
 			_env = env;
 		}
 
@@ -37,6 +39,7 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Create()
 		{
+			//ViewData["Departments"] = _departmentRepo.GetAll(); 
 			return View();
 		}
 
@@ -61,6 +64,8 @@ namespace Day03.MVC.PL.Controllers
 		[HttpGet]
 		public IActionResult Details(int? id, string ViewName = "Details")
 		{
+			//ViewData["Departments"] = _departmentRepo.GetAll();
+
 			if (!id.HasValue)
 				return BadRequest();
 			var employee = _employeesRepo.Get(id.Value);
@@ -74,6 +79,8 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Edit(int? id)
 		{
+			//ViewData["Departments"] = _departmentRepo.GetAll();
+
 			return Details(id, "Edit");
 		}
 
@@ -105,6 +112,8 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Delete(int? id)
 		{
+			//ViewData["Departments"] = _departmentRepo.GetAll();
+
 			return Details(id, "Delete");
 		}
 

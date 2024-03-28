@@ -41,10 +41,17 @@ namespace Day03.BLL.Repositories
 			///return department;
 			//==
 			return _DbContext.Find<T>(id);   //The Same Above
-													  //return _DbContext.Find<Department>(id);   //The Same Above
-													  //return _DbContext.Departments.Find(new { SrudentId=10,CourseId=1000});  
+											 //return _DbContext.Find<Department>(id);   //The Same Above
+											 //return _DbContext.Departments.Find(new { SrudentId=10,CourseId=1000});  
 		}
 		public IEnumerable<T> GetAll()
-			=> _DbContext.Set<T>().AsNoTracking().ToList();
+		{
+			if (typeof(T) == typeof(Employee))
+				return (IEnumerable<T>)_DbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+			else
+				return _DbContext.Set<T>().AsNoTracking().ToList();
+
+
+		}
 	}
 }
