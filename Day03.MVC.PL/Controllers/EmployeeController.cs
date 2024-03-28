@@ -22,6 +22,7 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Index()
 		{
+			TempData.Keep();
 			// Binding Through View's Dictionary : Transfer Data from Action To View => [One Way]
 			// 
 			//1.ViewData
@@ -30,7 +31,7 @@ namespace Day03.MVC.PL.Controllers
 			//2.ViewBag
 			ViewBag.Message = "Hello ViewBag";
 
-			var employees= _employeesRepo.GetAll();
+			var employees = _employeesRepo.GetAll();
 			return View(employees);
 		}
 
@@ -42,11 +43,17 @@ namespace Day03.MVC.PL.Controllers
 		[HttpPost]
 		public IActionResult Create(Employee employee)
 		{
-			if(ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				var Count=_employeesRepo.Add(employee);
-				if(Count > 0)				
-					RedirectToAction(nameof(Index));			
+				var Count = _employeesRepo.Add(employee);
+
+				//3.TempData
+				if (Count > 0)
+					TempData["Message"] = "Employee Is Created Successfully";
+				else
+					TempData["Message"] = "An Error ,Employee Not Created";
+	
+				return RedirectToAction(nameof(Index));
 			}
 			return View(employee);
 		}
@@ -56,18 +63,18 @@ namespace Day03.MVC.PL.Controllers
 		{
 			if (!id.HasValue)
 				return BadRequest();
-			var employee=_employeesRepo.Get(id.Value);
+			var employee = _employeesRepo.Get(id.Value);
 
-			if(employee is null)
+			if (employee is null)
 				return NotFound();
-			return View(ViewName,employee);
+			return View(ViewName, employee);
 		}
 
 		[HttpGet]
 
 		public IActionResult Edit(int? id)
 		{
-			return Details(id,"Edit");
+			return Details(id, "Edit");
 		}
 
 		[HttpPost]
@@ -75,9 +82,9 @@ namespace Day03.MVC.PL.Controllers
 
 		public IActionResult Edit([FromRoute] int id, Employee employee)
 		{
-			if(id!=employee.Id)
-				return BadRequest();	
-			if(!ModelState.IsValid)
+			if (id != employee.Id)
+				return BadRequest();
+			if (!ModelState.IsValid)
 				return View(employee);
 			try
 			{

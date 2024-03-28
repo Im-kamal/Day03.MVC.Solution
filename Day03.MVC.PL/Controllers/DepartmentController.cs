@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Drawing;
 
 namespace Day03.MVC.PL.Controllers
 {
@@ -22,7 +23,8 @@ namespace Day03.MVC.PL.Controllers
         }
         public IActionResult Index()
         {
-            var departments = _DepartmentsRepo.GetAll();
+			TempData.Keep();
+			var departments = _DepartmentsRepo.GetAll();
             return View(departments);
         }
 
@@ -30,16 +32,22 @@ namespace Day03.MVC.PL.Controllers
         { 
             return View();
         }
-
+         
         [HttpPost]
         public IActionResult Create(Department department)
         {
-            if (ModelState.IsValid)   //Server Side Validation
+			
+			if (ModelState.IsValid)   //Server Side Validation
             {
                 var count = _DepartmentsRepo.Add(department);
-                if (count > 0)
-                    return RedirectToAction(nameof(Index));
-            }
+				//3.TempData
+				if (count > 0)
+					TempData["Message"] = "Department Is Created Successfully";
+				else
+					TempData["Message"] = "An Error ,Department Not Created";
+
+				return RedirectToAction(nameof(Index));
+			}
             return View(department);
         }
 

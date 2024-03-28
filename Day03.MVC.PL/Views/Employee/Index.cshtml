@@ -6,10 +6,17 @@
 	@ViewData["Message"]
 </div> *@
 
-<div class="alert alert-success">
+@* <div class="alert alert-success">
 	@ViewBag.Message
-</div>
+</div> *@
 
+@{
+	if (!string.IsNullOrEmpty(TempData["Message"] as string))
+	{
+		<div class="alert alert-primary">
+	@TempData["Message"]
+</div>}
+}
 	
 
 
