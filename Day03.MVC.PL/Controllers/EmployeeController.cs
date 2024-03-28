@@ -1,10 +1,13 @@
-﻿using Day03.BLL.Interfaces;
+﻿using Castle.Core.Internal;
+using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Day03.MVC.PL.Controllers
 {
@@ -22,7 +25,7 @@ namespace Day03.MVC.PL.Controllers
 			_env = env;
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(string searchInp)
 		{
 			TempData.Keep();
 			// Binding Through View's Dictionary : Transfer Data from Action To View => [One Way]
@@ -33,8 +36,13 @@ namespace Day03.MVC.PL.Controllers
 			//2.ViewBag
 			ViewBag.Message = "Hello ViewBag";
 
-			var employees = _employeesRepo.GetAll();
+			var employees=Enumerable.Empty<Employee>();
+			if (string.IsNullOrEmpty(searchInp))
+				 employees = _employeesRepo.GetAll();
+			else
+				 employees = _employeesRepo.SearchByname(searchInp.ToLower());
 			return View(employees);
+
 		}
 
 		public IActionResult Create()
@@ -55,7 +63,7 @@ namespace Day03.MVC.PL.Controllers
 					TempData["Message"] = "Employee Is Created Successfully";
 				else
 					TempData["Message"] = "An Error ,Employee Not Created";
-	
+
 				return RedirectToAction(nameof(Index));
 			}
 			return View(employee);

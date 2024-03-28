@@ -1,6 +1,7 @@
 using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Data;
+using Day03.MVC.PL.Extentions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Day03.MVC.PL
 {
-	public class Startup
+	public class Startup 
 	{
 		public IConfiguration Configuration { get; }
 		public Startup(IConfiguration configuration)
@@ -38,7 +39,8 @@ namespace Day03.MVC.PL
 				//contextLifetime : ServiceLifetime.Scoped,  //Default
 				//optionsLifetime : ServiceLifetime.Scoped   //Default
 				options => { options.UseSqlServer("Server=.;Database=MVCApplication;Trusted_Connection=True"); }
-				);			
+				);
+			services.AddApplicationServices();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

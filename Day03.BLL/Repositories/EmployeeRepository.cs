@@ -22,6 +22,7 @@ namespace Day03.BLL.Repositories
 			return _DbContext.Employees.Where(E => E.Address.ToLower() == address.ToLower());
 		}
 
-		
+		public IQueryable<Employee> SearchByname(string name)
+		=>_DbContext.Employees.Where(E=>E.Name.ToLower().Contains( name));
 	}
 }

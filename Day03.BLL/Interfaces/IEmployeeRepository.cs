@@ -10,5 +10,7 @@ namespace Day03.BLL.Interfaces
 	public interface IEmployeeRepository:IGenericRepository<Employee>
 	{ 
 		IQueryable<Employee> GetEmployeeByaddress(string address);
+
+		IQueryable<Employee> SearchByname(string name); 
 	}
 }
