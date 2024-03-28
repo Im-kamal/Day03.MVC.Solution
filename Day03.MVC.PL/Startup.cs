@@ -38,9 +38,7 @@ namespace Day03.MVC.PL
 				//contextLifetime : ServiceLifetime.Scoped,  //Default
 				//optionsLifetime : ServiceLifetime.Scoped   //Default
 				options => { options.UseSqlServer("Server=.;Database=MVCApplication;Trusted_Connection=True"); }
-				);
-			services.AddScoped<IDepartmentRepositories,DepartmentRepositories>();
-			services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+				);			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
