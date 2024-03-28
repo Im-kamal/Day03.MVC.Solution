@@ -1,7 +1,9 @@
-﻿using Castle.Core.Internal;
+﻿using AutoMapper;
+using Castle.Core.Internal;
 using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Models;
+using Day03.MVC.PL.ViweModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -13,13 +15,14 @@ namespace Day03.MVC.PL.Controllers
 {
 	public class EmployeeController : Controller
 	{
-
+		private readonly IMapper _mapper;
 		private readonly IEmployeeRepository _employeesRepo;
 		//private readonly IDepartmentRepositories _departmentRepo;
 		private readonly IHostEnvironment _env;
 
-		public EmployeeController(IEmployeeRepository employeetRepo,/*IDepartmentRepositories departmentRepo,*/ IHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
+		public EmployeeController(IMapper mapper,IEmployeeRepository employeetRepo,/*IDepartmentRepositories departmentRepo,*/ IHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
 		{
+			_mapper = mapper;
 			_employeesRepo = employeetRepo;
 			//_departmentRepo = departmentRepo;
 			_env = env;
@@ -41,7 +44,9 @@ namespace Day03.MVC.PL.Controllers
 				 employees = _employeesRepo.GetAll();
 			else
 				 employees = _employeesRepo.SearchByname(searchInp.ToLower());
-			return View(employees);
+			var MappedEmp = _mapper.Map<IEnumerable<Employee>,IEnumerable<EmployeeViewModel>>(employees);
+
+			return View(MappedEmp);
 
 		}
 
@@ -52,11 +57,12 @@ namespace Day03.MVC.PL.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Create(Employee employee)
+		public IActionResult Create(EmployeeViewModel employeeVM)
 		{
 			if (ModelState.IsValid)
 			{
-				var Count = _employeesRepo.Add(employee);
+				var MappedEmp=_mapper.Map<EmployeeViewModel,Employee>(employeeVM);
+				var Count = _employeesRepo.Add(MappedEmp);
 
 				//3.TempData
 				if (Count > 0)
@@ -66,7 +72,7 @@ namespace Day03.MVC.PL.Controllers
 
 				return RedirectToAction(nameof(Index));
 			}
-			return View(employee);
+			return View(employeeVM);
 		}
 
 		[HttpGet]
@@ -77,10 +83,11 @@ namespace Day03.MVC.PL.Controllers
 			if (!id.HasValue)
 				return BadRequest();
 			var employee = _employeesRepo.Get(id.Value);
+			var MappedEmp = _mapper.Map<Employee,EmployeeViewModel>(employee);
 
 			if (employee is null)
 				return NotFound();
-			return View(ViewName, employee);
+			return View(ViewName, MappedEmp);
 		}
 
 		[HttpGet]
@@ -95,15 +102,17 @@ namespace Day03.MVC.PL.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 
-		public IActionResult Edit([FromRoute] int id, Employee employee)
+		public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
 		{
-			if (id != employee.Id)
+			if (id != employeeVM.Id)
 				return BadRequest();
 			if (!ModelState.IsValid)
-				return View(employee);
+				return View(employeeVM);
 			try
 			{
-				_employeesRepo.Update(employee);
+				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+				_employeesRepo.Update(MappedEmp); 
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
@@ -114,7 +123,7 @@ namespace Day03.MVC.PL.Controllers
 					ModelState.AddModelError(string.Empty, ex.Message);
 				else
 					ModelState.AddModelError(string.Empty, "An Error During Update The Employee");
-				return View(employee);
+				return View(employeeVM);
 			}
 		}
 
@@ -126,11 +135,13 @@ namespace Day03.MVC.PL.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Delete(Employee employee)
+		public IActionResult Delete(EmployeeViewModel employeeVm)
 		{
 			try
 			{
-				_employeesRepo.Delete(employee);
+				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);	
+
+				_employeesRepo.Delete(MappedEmp);
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
@@ -139,7 +150,7 @@ namespace Day03.MVC.PL.Controllers
 					ModelState.AddModelError(string.Empty, ex.Message);
 				else
 					ModelState.AddModelError(string.Empty, "An Error During Update The Department");
-				return View(employee);
+				return View(employeeVm);
 			}
 		}
 	}
