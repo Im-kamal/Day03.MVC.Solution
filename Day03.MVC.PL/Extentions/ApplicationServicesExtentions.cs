@@ -5,7 +5,7 @@ using Day03.MVC.PL.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Day03.MVC.PL.Extentions 
-{ 
+{  
 	public static class ApplicationServicesExtentions
 	{
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services )

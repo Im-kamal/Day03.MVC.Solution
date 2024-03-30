@@ -21,7 +21,7 @@ namespace Day03.MVC.PL.Controllers
 		//private readonly IDepartmentRepositories _departmentRepo;
 		private readonly IHostEnvironment _env;
 
-		public EmployeeController(     
+		public EmployeeController(      
 			IUnitOfWork unitOfWork,
 			//IEmployeeRepository employeetRepo,
 			/*IDepartmentRepositories departmentRepo,*/
@@ -46,10 +46,11 @@ namespace Day03.MVC.PL.Controllers
 			//ViewBag.Message = "Hello ViewBag";
 
 			var employees=Enumerable.Empty<Employee>();
+			var employeeRepo=_unitOfWork.Repository<Employee>() as EmployeeRepository;
 			if (string.IsNullOrEmpty(searchInp))
-				 employees = _unitOfWork.EmployeeRepository.GetAll();
+				 employees = employeeRepo.GetAll();
 			else
-				 employees = _unitOfWork.EmployeeRepository.SearchByname(searchInp);
+				 employees = employeeRepo.SearchByname(searchInp); 
 
 			return View(_mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees));
 
@@ -67,15 +68,15 @@ namespace Day03.MVC.PL.Controllers
 			if (ModelState.IsValid)
 			{
 				var MappedEmp=_mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-				 _unitOfWork.EmployeeRepository.Add(MappedEmp);
+				 _unitOfWork.Repository<Employee>().Add(MappedEmp);
 
 				//2.Update Department
-				//_unitOfWork.DepartmentRepository.Update(department)
+				//_unitOfWork..Repository<Department >().Update(department)
 				//3.Delete Department
-				//_unitOfWork.ProjectRepository.Delete(department)
+				//_unitOfWork..Repository<Project>().Delete(department)
 
 				//_dbContext.SaveChanges();
-				var Count=_unitOfWork.Complete();
+				var Count =_unitOfWork.Complete();
 				//3.TempData
 				if (Count > 0)
 					TempData["Message"] = "Employee Is Created Successfully";
@@ -94,7 +95,7 @@ namespace Day03.MVC.PL.Controllers
 
 			if (!id.HasValue)
 				return BadRequest();
-			var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+			var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
 			var MappedEmp = _mapper.Map<Employee,EmployeeViewModel>(employee);
 
 			if (employee is null)
@@ -124,7 +125,7 @@ namespace Day03.MVC.PL.Controllers
 			{
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-				_unitOfWork.EmployeeRepository.Update(MappedEmp);
+				_unitOfWork.Repository<Employee>().Update(MappedEmp);
 				_unitOfWork.Complete();	
 				return RedirectToAction(nameof(Index));
 			}
@@ -154,7 +155,7 @@ namespace Day03.MVC.PL.Controllers
 			{
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);	
 
-				_unitOfWork.EmployeeRepository .Delete(MappedEmp);
+				_unitOfWork.Repository<Employee>().Delete(MappedEmp);
 				_unitOfWork.Complete();
 				return RedirectToAction(nameof(Index));
 			}

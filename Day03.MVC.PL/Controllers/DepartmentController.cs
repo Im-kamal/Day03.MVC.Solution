@@ -26,7 +26,7 @@ namespace Day03.MVC.PL.Controllers
         public IActionResult Index()
         {
 			TempData.Keep();
-			var departments = _unitOfWork.DepartmentRepository.GetAll();
+			var departments = _unitOfWork.Repository<Department>().GetAll();
             return View(departments);
         }
 
@@ -41,7 +41,7 @@ namespace Day03.MVC.PL.Controllers
 			
 			if (ModelState.IsValid)   //Server Side Validation
             {
-                 _unitOfWork.DepartmentRepository.Add(department);
+                 _unitOfWork.Repository<Department>().Add(department);
                 var count = _unitOfWork.Complete();
 				//3.TempData
 				if (count > 0)
@@ -62,7 +62,7 @@ namespace Day03.MVC.PL.Controllers
         {
             if (!id.HasValue)       // is null
                 return BadRequest();    //Helper Method from ControllerBase   //400
-            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
 
             if (department is null)
                 return NotFound();       //404
@@ -101,7 +101,7 @@ namespace Day03.MVC.PL.Controllers
 
             try
             {
-				_unitOfWork.DepartmentRepository.Update(department);
+				_unitOfWork.Repository<Department>().Update(department);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
@@ -132,7 +132,7 @@ namespace Day03.MVC.PL.Controllers
         {
             try
             {
-				_unitOfWork.DepartmentRepository.Delete(department);
+				_unitOfWork.Repository<Department>().Delete(department);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }

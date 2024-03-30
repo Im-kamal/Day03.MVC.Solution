@@ -1,7 +1,9 @@
 ﻿using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Data;
+using Day03.DAL.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,16 +15,33 @@ namespace Day03.BLL
 	{
 		private readonly ApplicationDbContext _dbContext;
 
-		public IEmployeeRepository EmployeeRepository { get ; set ; }
-		public IDepartmentRepositories DepartmentRepository { get ; set ; }
+		//private Dictionary<string, IGenericRepository<ModelBase>> _reposetories;
+		private Hashtable _reposetories;
 
-        public UnitOfWork(ApplicationDbContext dbContext)
-        {
-		    _dbContext = dbContext;
-			EmployeeRepository =new EmployeeRepository(_dbContext);
-			DepartmentRepository= new DepartmentRepositories(_dbContext);
+		public UnitOfWork(ApplicationDbContext dbContext)
+		{
+			_dbContext = dbContext;
 		}
-        public int Complete()
+		public IGenericRepository<T> Repository<T>() where T : ModelBase
+		{
+			var Key = typeof(T).Name;
+			if (!_reposetories.ContainsKey(Key))
+			{
+				if (Key == nameof(Employee))
+				{
+					var repository = new EmployeeRepository(_dbContext);
+					_reposetories.Add(Key, repository);
+				}
+				else
+				{
+					var repository = new GenericRepository<T>(_dbContext);
+
+					_reposetories.Add(Key, repository);
+				}
+			}
+			return _reposetories[Key] as IGenericRepository<T>;
+		}
+		public int Complete()
 		{
 			return _dbContext.SaveChanges();
 		}
@@ -30,5 +49,7 @@ namespace Day03.BLL
 		{
 			_dbContext.Dispose();
 		}
+
+
 	}
 }

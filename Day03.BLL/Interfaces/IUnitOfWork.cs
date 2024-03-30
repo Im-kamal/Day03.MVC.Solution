@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Day03.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,7 @@ namespace Day03.BLL.Interfaces
 {
 	public interface IUnitOfWork:IDisposable 
 	{
-        public IEmployeeRepository EmployeeRepository { get; set; }
-        public IDepartmentRepositories DepartmentRepository { get; set; }
+        IGenericRepository<T> Repository<T>() where T : ModelBase;
         int Complete(); 
     }
 }

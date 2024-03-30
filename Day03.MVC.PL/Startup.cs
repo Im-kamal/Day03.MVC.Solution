@@ -2,6 +2,7 @@ using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Data;
 using Day03.MVC.PL.Extentions;
+using Day03.MVC.PL.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+ 
 namespace Day03.MVC.PL
 {
 	public class Startup 
@@ -40,6 +41,7 @@ namespace Day03.MVC.PL
 				//optionsLifetime : ServiceLifetime.Scoped   //Default
 				options => { options.UseSqlServer("Server=.;Database=MVCApplication;Trusted_Connection=True"); }
 				);
+			services.AddAutoMapper(M=>M.AddProfile(new MappingProfiles()));
 			services.AddApplicationServices();
 		}
 
