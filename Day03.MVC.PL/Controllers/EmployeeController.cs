@@ -41,7 +41,7 @@ namespace Day03.MVC.PL.Controllers
 			// 
 			////1.ViewData
 			//ViewData["Message"] = "Hello ViewData";
-
+			//
 			////2.ViewBag
 			//ViewBag.Message = "Hello ViewBag";
 
