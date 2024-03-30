@@ -30,7 +30,7 @@ namespace Day03.MVC.PL
 		{
 			services.AddControllersWithViews();
 			//services.AddTransient<ApplicationDbContext>();
-			//services.AddSingleton<ApplicationDbContext>();
+			//services.AddSingleton<ApplicationDbContext>(); 
 
 			// services.AddScoped<ApplicationDbContext>();
 			//services.AddScoped<DbContextOptions<ApplicationDbContext>>();

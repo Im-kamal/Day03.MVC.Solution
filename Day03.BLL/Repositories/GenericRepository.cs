@@ -3,7 +3,7 @@ using Day03.DAL.Data;
 using Day03.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,21 +17,15 @@ namespace Day03.BLL.Repositories
 		{
 			_DbContext = dbContext;
 		}
-		public int Add(T entity)
-		{
-			_DbContext.Set<T>().Add(entity);
-			return _DbContext.SaveChanges();
-		}
-		public int Update(T entity)
-		{
-			_DbContext.Set<T>().Update(entity);
-			return _DbContext.SaveChanges();
-		}
-		public int Delete(T entity)
-		{
-			_DbContext.Set<T>().Remove(entity);
-			return _DbContext.SaveChanges();
-		}
+		public void Add(T entity)
+			=>_DbContext.Set<T>().Add(entity);
+		
+		public void Update(T entity)
+			=>_DbContext.Set<T>().Update(entity);
+		
+		public void Delete(T entity)
+			=>_DbContext.Set<T>().Remove(entity);
+		
 		public T Get(int id)
 		{
 			///var department=_DbContext.Departments.Local.Where(D=>D.Id==id).FirstOrDefault();
@@ -50,8 +44,6 @@ namespace Day03.BLL.Repositories
 				return (IEnumerable<T>)_DbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
 			else
 				return _DbContext.Set<T>().AsNoTracking().ToList();
-
-
 		}
 	}
 }

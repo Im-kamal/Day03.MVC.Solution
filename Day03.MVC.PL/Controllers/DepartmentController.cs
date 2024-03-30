@@ -13,18 +13,20 @@ namespace Day03.MVC.PL.Controllers
     //Composition: DepartmentController is a DepartmentRepositories
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepositories _DepartmentsRepo;
-        private readonly IHostEnvironment _env;
+        
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepositories departmentRepo, IWebHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
+        public DepartmentController(IUnitOfWork unitOfWork, IWebHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
         {
-            _DepartmentsRepo = departmentRepo;
-            _env = env;
+         
+			_unitOfWork = unitOfWork;
+			_env = env;
         }
         public IActionResult Index()
         {
 			TempData.Keep();
-			var departments = _DepartmentsRepo.GetAll();
+			var departments = _unitOfWork.DepartmentRepository.GetAll();
             return View(departments);
         }
 
@@ -39,7 +41,8 @@ namespace Day03.MVC.PL.Controllers
 			
 			if (ModelState.IsValid)   //Server Side Validation
             {
-                var count = _DepartmentsRepo.Add(department);
+                 _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.Complete();
 				//3.TempData
 				if (count > 0)
 					TempData["Message"] = "Department Is Created Successfully";
@@ -59,7 +62,7 @@ namespace Day03.MVC.PL.Controllers
         {
             if (!id.HasValue)       // is null
                 return BadRequest();    //Helper Method from ControllerBase   //400
-            var department = _DepartmentsRepo.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
 
             if (department is null)
                 return NotFound();       //404
@@ -98,7 +101,8 @@ namespace Day03.MVC.PL.Controllers
 
             try
             {
-                _DepartmentsRepo.Update(department);
+				_unitOfWork.DepartmentRepository.Update(department);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -128,7 +132,8 @@ namespace Day03.MVC.PL.Controllers
         {
             try
             {
-                _DepartmentsRepo.Delete(department);
+				_unitOfWork.DepartmentRepository.Delete(department);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

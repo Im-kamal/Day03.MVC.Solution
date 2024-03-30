@@ -15,38 +15,43 @@ namespace Day03.MVC.PL.Controllers
 {
 	public class EmployeeController : Controller
 	{
+		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-		private readonly IEmployeeRepository _employeesRepo;
+		//private readonly IEmployeeRepository _employeesRepo;
 		//private readonly IDepartmentRepositories _departmentRepo;
 		private readonly IHostEnvironment _env;
 
-		public EmployeeController(IMapper mapper,IEmployeeRepository employeetRepo,/*IDepartmentRepositories departmentRepo,*/ IHostEnvironment env)  //Ask Clr Create Object from "DepartmentRepositories"
+		public EmployeeController(     
+			IUnitOfWork unitOfWork,
+			//IEmployeeRepository employeetRepo,
+			/*IDepartmentRepositories departmentRepo,*/
+			IMapper mapper, 
+			IHostEnvironment env) 
+			//Ask Clr Create Object from "DepartmentRepositories"
 		{
+			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-			_employeesRepo = employeetRepo;
-			//_departmentRepo = departmentRepo;
 			_env = env;
-		}
+		} 
 
 		public IActionResult Index(string searchInp)
 		{
 			TempData.Keep();
 			// Binding Through View's Dictionary : Transfer Data from Action To View => [One Way]
 			// 
-			//1.ViewData
-			ViewData["Message"] = "Hello ViewData";
+			////1.ViewData
+			//ViewData["Message"] = "Hello ViewData";
 
-			//2.ViewBag
-			ViewBag.Message = "Hello ViewBag";
+			////2.ViewBag
+			//ViewBag.Message = "Hello ViewBag";
 
 			var employees=Enumerable.Empty<Employee>();
 			if (string.IsNullOrEmpty(searchInp))
-				 employees = _employeesRepo.GetAll();
+				 employees = _unitOfWork.EmployeeRepository.GetAll();
 			else
-				 employees = _employeesRepo.SearchByname(searchInp.ToLower());
-			var MappedEmp = _mapper.Map<IEnumerable<Employee>,IEnumerable<EmployeeViewModel>>(employees);
+				 employees = _unitOfWork.EmployeeRepository.SearchByname(searchInp);
 
-			return View(MappedEmp);
+			return View(_mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees));
 
 		}
 
@@ -62,8 +67,15 @@ namespace Day03.MVC.PL.Controllers
 			if (ModelState.IsValid)
 			{
 				var MappedEmp=_mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-				var Count = _employeesRepo.Add(MappedEmp);
+				 _unitOfWork.EmployeeRepository.Add(MappedEmp);
 
+				//2.Update Department
+				//_unitOfWork.DepartmentRepository.Update(department)
+				//3.Delete Department
+				//_unitOfWork.ProjectRepository.Delete(department)
+
+				//_dbContext.SaveChanges();
+				var Count=_unitOfWork.Complete();
 				//3.TempData
 				if (Count > 0)
 					TempData["Message"] = "Employee Is Created Successfully";
@@ -82,7 +94,7 @@ namespace Day03.MVC.PL.Controllers
 
 			if (!id.HasValue)
 				return BadRequest();
-			var employee = _employeesRepo.Get(id.Value);
+			var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
 			var MappedEmp = _mapper.Map<Employee,EmployeeViewModel>(employee);
 
 			if (employee is null)
@@ -112,7 +124,8 @@ namespace Day03.MVC.PL.Controllers
 			{
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-				_employeesRepo.Update(MappedEmp); 
+				_unitOfWork.EmployeeRepository.Update(MappedEmp);
+				_unitOfWork.Complete();	
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
@@ -141,7 +154,8 @@ namespace Day03.MVC.PL.Controllers
 			{
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);	
 
-				_employeesRepo.Delete(MappedEmp);
+				_unitOfWork.EmployeeRepository .Delete(MappedEmp);
+				_unitOfWork.Complete();
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
