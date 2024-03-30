@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Day03.BLL.Interfaces
 {
-	public interface IUnitOfWork:IDisposable
+	public interface IUnitOfWork:IDisposable 
 	{
         public IEmployeeRepository EmployeeRepository { get; set; }
         public IDepartmentRepositories DepartmentRepository { get; set; }
