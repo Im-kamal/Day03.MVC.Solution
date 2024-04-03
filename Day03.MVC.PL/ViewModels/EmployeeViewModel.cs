@@ -1,6 +1,7 @@
 ﻿using Day03.DAL.Models;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Day03.MVC.PL.ViweModels
 {
@@ -44,5 +45,9 @@ namespace Day03.MVC.PL.ViweModels
 		//[InverseProperty(nameof(Models.Department.Employees))]
 		//Navigtional Property [ONE]
 		public Department Department { get; set; }
-	}
+
+        public IFormFile Image { get; set; }
+
+		public string ImageName { get; set; }
+    }
 }

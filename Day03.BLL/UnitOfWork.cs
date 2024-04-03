@@ -21,6 +21,7 @@ namespace Day03.BLL
 		public UnitOfWork(ApplicationDbContext dbContext)
 		{
 			_dbContext = dbContext;
+			_reposetories = new Hashtable();
 		}
 		public IGenericRepository<T> Repository<T>() where T : ModelBase
 		{

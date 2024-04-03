@@ -3,13 +3,16 @@ using Castle.Core.Internal;
 using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Models;
+using Day03.MVC.PL.Helpers;
 using Day03.MVC.PL.ViweModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using MVCProject.PL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace Day03.MVC.PL.Controllers
 {
@@ -67,7 +70,10 @@ namespace Day03.MVC.PL.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+					employeeVM.ImageName=DocumentSettings.UploadFile(employeeVM.Image, "Images");
+
 				var MappedEmp=_mapper.Map<EmployeeViewModel,Employee>(employeeVM);
+				
 				 _unitOfWork.Repository<Employee>().Add(MappedEmp);
 
 				//2.Update Department
@@ -79,7 +85,9 @@ namespace Day03.MVC.PL.Controllers
 				var Count =_unitOfWork.Complete();
 				//3.TempData
 				if (Count > 0)
+				{
 					TempData["Message"] = "Employee Is Created Successfully";
+				}
 				else
 					TempData["Message"] = "An Error ,Employee Not Created";
 

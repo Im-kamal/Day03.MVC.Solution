@@ -26,7 +26,7 @@ namespace Day03.DAL.Models
 	public class Employee:ModelBase
 	{
 		
-		
+		public string ImageName { get; set; } 
 		public string Name { get; set; }
 
 		
@@ -59,6 +59,6 @@ namespace Day03.DAL.Models
 
 		//[InverseProperty(nameof(Models.Department.Employees))]
         //Navigtional Property [ONE]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
     }
 }
