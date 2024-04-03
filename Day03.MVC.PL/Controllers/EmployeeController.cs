@@ -24,18 +24,18 @@ namespace Day03.MVC.PL.Controllers
 		//private readonly IDepartmentRepositories _departmentRepo;
 		private readonly IHostEnvironment _env;
 
-		public EmployeeController(      
+		public EmployeeController(
 			IUnitOfWork unitOfWork,
 			//IEmployeeRepository employeetRepo,
 			/*IDepartmentRepositories departmentRepo,*/
-			IMapper mapper, 
-			IHostEnvironment env) 
-			//Ask Clr Create Object from "DepartmentRepositories"
+			IMapper mapper,
+			IHostEnvironment env)
+		//Ask Clr Create Object from "DepartmentRepositories"
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 			_env = env;
-		} 
+		}
 
 		public IActionResult Index(string searchInp)
 		{
@@ -48,12 +48,12 @@ namespace Day03.MVC.PL.Controllers
 			////2.ViewBag
 			//ViewBag.Message = "Hello ViewBag";
 
-			var employees=Enumerable.Empty<Employee>();
-			var employeeRepo=_unitOfWork.Repository<Employee>() as EmployeeRepository;
+			var employees = Enumerable.Empty<Employee>();
+			var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
 			if (string.IsNullOrEmpty(searchInp))
-				 employees = employeeRepo.GetAll();
+				employees = employeeRepo.GetAll();
 			else
-				 employees = employeeRepo.SearchByname(searchInp); 
+				employees = employeeRepo.SearchByname(searchInp);
 
 			return View(_mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees));
 
@@ -70,11 +70,11 @@ namespace Day03.MVC.PL.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-					employeeVM.ImageName=DocumentSettings.UploadFile(employeeVM.Image, "Images");
+				employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
 
-				var MappedEmp=_mapper.Map<EmployeeViewModel,Employee>(employeeVM);
-				
-				 _unitOfWork.Repository<Employee>().Add(MappedEmp);
+				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+				_unitOfWork.Repository<Employee>().Add(MappedEmp);
 
 				//2.Update Department
 				//_unitOfWork..Repository<Department >().Update(department)
@@ -82,7 +82,7 @@ namespace Day03.MVC.PL.Controllers
 				//_unitOfWork..Repository<Project>().Delete(department)
 
 				//_dbContext.SaveChanges();
-				var Count =_unitOfWork.Complete();
+				var Count = _unitOfWork.Complete();
 				//3.TempData
 				if (Count > 0)
 				{
@@ -104,10 +104,13 @@ namespace Day03.MVC.PL.Controllers
 			if (!id.HasValue)
 				return BadRequest();
 			var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
-			var MappedEmp = _mapper.Map<Employee,EmployeeViewModel>(employee);
+			var MappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
 			if (employee is null)
 				return NotFound();
+			if (ViewName.Equals("Delete", StringComparison.OrdinalIgnoreCase))
+				TempData["ImageName"] = employee.ImageName;
+
 			return View(ViewName, MappedEmp);
 		}
 
@@ -134,7 +137,7 @@ namespace Day03.MVC.PL.Controllers
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 				_unitOfWork.Repository<Employee>().Update(MappedEmp);
-				_unitOfWork.Complete();	
+				_unitOfWork.Complete();
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
@@ -152,7 +155,6 @@ namespace Day03.MVC.PL.Controllers
 		public IActionResult Delete(int? id)
 		{
 			//ViewData["Departments"] = _departmentRepo.GetAll();
-
 			return Details(id, "Delete");
 		}
 
@@ -161,11 +163,18 @@ namespace Day03.MVC.PL.Controllers
 		{
 			try
 			{
-				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);	
+				employeeVm.ImageName = TempData["ImageName"] as string;
+				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);
 
 				_unitOfWork.Repository<Employee>().Delete(MappedEmp);
-				_unitOfWork.Complete();
-				return RedirectToAction(nameof(Index));
+				var count = _unitOfWork.Complete();
+				if (count > 0)
+				{
+					DocumentSettings.DeleteFile(employeeVm.ImageName, "Images");
+					return RedirectToAction(nameof(Index));
+				}
+				return View(employeeVm);
+
 			}
 			catch (Exception ex)
 			{

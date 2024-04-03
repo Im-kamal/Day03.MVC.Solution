@@ -9,6 +9,6 @@ namespace Day03.BLL.Interfaces
 {
 	public interface IDepartmentRepositories:IGenericRepository<Department>
 	{
-		
-	}
+
+    }
 }
