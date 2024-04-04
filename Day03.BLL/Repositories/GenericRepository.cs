@@ -26,7 +26,7 @@ namespace Day03.BLL.Repositories
 		public void Delete(T entity)
 			=>_DbContext.Set<T>().Remove(entity);
 		
-		public T Get(int id)
+		public async Task<T> GetAsync(int id)
 		{
 			///var department=_DbContext.Departments.Local.Where(D=>D.Id==id).FirstOrDefault();
 			///Local=>بتشوف الداتا دي رجعت قبل كده ولا لا لو رجعت بيجيبوا من اللوكال مش بيروح يجيبه من الداتابيز تاني
@@ -34,16 +34,16 @@ namespace Day03.BLL.Repositories
 			///	department=_DbContext.Set<T>().Local.Where(D => D.Id == id).FirstOrDefault();
 			///return department;
 			//==
-			return _DbContext.Find<T>(id);   //The Same Above
+			return await _DbContext.FindAsync<T>(id);   //The Same Above
 											 //return _DbContext.Find<Department>(id);   //The Same Above
 											 //return _DbContext.Departments.Find(new { SrudentId=10,CourseId=1000});  
 		}
-		public IEnumerable<T> GetAll()
+		public async Task<IEnumerable<T>> GetAllAsync()
 		{
 			if (typeof(T) == typeof(Employee))
-				return (IEnumerable<T>)_DbContext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+				return (IEnumerable<T>) await _DbContext.Employees.Include(E => E.Department).AsNoTracking().ToListAsync();
 			else
-				return _DbContext.Set<T>().AsNoTracking().ToList();
+				return await  _DbContext.Set<T>().AsNoTracking().ToListAsync();
 		}
 	}
 }

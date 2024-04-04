@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
 {
@@ -37,7 +38,7 @@ namespace Day03.MVC.PL.Controllers
 			_env = env;
 		}
 
-		public IActionResult Index(string searchInp)
+		public async Task<IActionResult> Index(string searchInp)
 		{
 			TempData.Keep();
 			// Binding Through View's Dictionary : Transfer Data from Action To View => [One Way]
@@ -51,7 +52,7 @@ namespace Day03.MVC.PL.Controllers
 			var employees = Enumerable.Empty<Employee>();
 			var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
 			if (string.IsNullOrEmpty(searchInp))
-				employees = employeeRepo.GetAll();
+				employees = await employeeRepo.GetAllAsync();
 			else
 				employees = employeeRepo.SearchByname(searchInp);
 
@@ -66,11 +67,11 @@ namespace Day03.MVC.PL.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Create(EmployeeViewModel employeeVM)
+		public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
 		{
 			if (ModelState.IsValid)
 			{
-				employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
+				employeeVM.ImageName = await DocumentSettings.UploadFile(employeeVM.Image, "Images");
 
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
@@ -82,7 +83,7 @@ namespace Day03.MVC.PL.Controllers
 				//_unitOfWork..Repository<Project>().Delete(department)
 
 				//_dbContext.SaveChanges();
-				var Count = _unitOfWork.Complete();
+				var Count = await _unitOfWork.Complete();
 				//3.TempData
 				if (Count > 0)
 				{
@@ -95,15 +96,15 @@ namespace Day03.MVC.PL.Controllers
 			}
 			return View(employeeVM);
 		}
-
+		 
 		[HttpGet]
-		public IActionResult Details(int? id, string ViewName = "Details")
+		public async Task<IActionResult> Details(int? id, string ViewName = "Details")
 		{
 			//ViewData["Departments"] = _departmentRepo.GetAll();
 
 			if (!id.HasValue)
 				return BadRequest();
-			var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
+			var employee = await _unitOfWork.Repository<Employee>().GetAsync(id.Value);
 			var MappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
 
 			if (employee is null)
@@ -116,11 +117,11 @@ namespace Day03.MVC.PL.Controllers
 
 		[HttpGet]
 
-		public IActionResult Edit(int? id)
+		public async Task<IActionResult> Edit(int? id)
 		{
 			//ViewData["Departments"] = _departmentRepo.GetAll();
 
-			return Details(id, "Edit");
+			return await Details(id, "Edit");
 		}
 
 		[HttpPost]
@@ -152,14 +153,14 @@ namespace Day03.MVC.PL.Controllers
 			}
 		}
 
-		public IActionResult Delete(int? id)
+		public async Task<IActionResult> Delete(int? id)
 		{
 			//ViewData["Departments"] = _departmentRepo.GetAll();
-			return Details(id, "Delete");
+			return await Details(id, "Delete");
 		}
 
 		[HttpPost]
-		public IActionResult Delete(EmployeeViewModel employeeVm)
+		public async Task<IActionResult> Delete(EmployeeViewModel employeeVm)
 		{
 			try
 			{
@@ -167,7 +168,7 @@ namespace Day03.MVC.PL.Controllers
 				var MappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVm);
 
 				_unitOfWork.Repository<Employee>().Delete(MappedEmp);
-				var count = _unitOfWork.Complete();
+				var count =await _unitOfWork.Complete();
 				if (count > 0)
 				{
 					DocumentSettings.DeleteFile(employeeVm.ImageName, "Images");

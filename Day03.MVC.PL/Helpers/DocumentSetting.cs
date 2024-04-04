@@ -7,7 +7,7 @@ namespace MVCProject.PL.Helpers
 {
 	public static class DocumentSettings
 	{
-		public static  string UploadFile(IFormFile file, string folderName)
+		public static  async Task<string> UploadFile(IFormFile file, string folderName)
 		{
 			// 1. Get Located Folder Path
 			var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files", folderName);
@@ -23,7 +23,7 @@ namespace MVCProject.PL.Helpers
 			// 4. Save Files as Streams[Data Per Time]
 			using var fileStream = new FileStream(filePath, FileMode.Create);
 
-			 file.CopyTo(fileStream);
+			await file.CopyToAsync(fileStream);
 
 			return fileName;
 		}

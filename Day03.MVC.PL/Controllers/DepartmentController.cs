@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
 {
@@ -23,10 +24,10 @@ namespace Day03.MVC.PL.Controllers
 			_unitOfWork = unitOfWork;
 			_env = env;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 			TempData.Keep();
-			var departments = _unitOfWork.Repository<Department>().GetAll();
+			var departments =await _unitOfWork.Repository<Department>().GetAllAsync();
             return View(departments);
         }
 
@@ -36,13 +37,13 @@ namespace Day03.MVC.PL.Controllers
         }
          
         [HttpPost]
-        public IActionResult Create(Department department)
+        public async Task<IActionResult> Create(Department department)
         {
 			
 			if (ModelState.IsValid)   //Server Side Validation
             {
                  _unitOfWork.Repository<Department>().Add(department);
-                var count = _unitOfWork.Complete();
+                var count =await _unitOfWork.Complete();
 				//3.TempData
 				if (count > 0)
 					TempData["Message"] = "Department Is Created Successfully";
@@ -58,11 +59,11 @@ namespace Day03.MVC.PL.Controllers
         // /Department/Details/10
         // /Department/Details
         [HttpGet]
-        public IActionResult Details(int? id, string ViewName = "Details")
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details")
         {
             if (!id.HasValue)       // is null
                 return BadRequest();    //Helper Method from ControllerBase   //400
-            var department = _unitOfWork.Repository<Department>().Get(id.Value);
+            var department =await _unitOfWork.Repository<Department>().GetAsync(id.Value);
 
             if (department is null)
                 return NotFound();       //404
@@ -73,7 +74,7 @@ namespace Day03.MVC.PL.Controllers
 		// /Department/Edit/10
 		// /Department/Edit
 		[HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             #region The same code in Details => Not Recomended
             ////if (!id.HasValue)       // is null
@@ -85,12 +86,12 @@ namespace Day03.MVC.PL.Controllers
             ////return View(department); 
             #endregion
 
-            return Details(id, "Edit");   //Recomended  No Dublcate Code
+            return await Details(id, "Edit");   //Recomended  No Dublcate Code
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute]int id,Department department)
+        public async Task<IActionResult> Edit([FromRoute]int id,Department department)
         {
             if(id!=department.Id)
                 return BadRequest(" An Error ");
@@ -102,7 +103,7 @@ namespace Day03.MVC.PL.Controllers
             try
             {
 				_unitOfWork.Repository<Department>().Update(department);
-                _unitOfWork.Complete();
+               await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -122,18 +123,18 @@ namespace Day03.MVC.PL.Controllers
         // /Department/Delete
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]
-        public IActionResult Delete(Department department)
+        public async Task<IActionResult> Delete(Department department)
         {
             try
             {
 				_unitOfWork.Repository<Department>().Delete(department);
-                _unitOfWork.Complete();
+                await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

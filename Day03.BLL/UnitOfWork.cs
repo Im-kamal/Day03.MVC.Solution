@@ -42,13 +42,13 @@ namespace Day03.BLL
 			}
 			return _reposetories[Key] as IGenericRepository<T>;
 		}
-		public int Complete()
+		public async Task<int> Complete()
 		{
-			return _dbContext.SaveChanges();
+			return await _dbContext.SaveChangesAsync();
 		}
-		public void Dispose()
+		public async ValueTask DisposeAsync()
 		{
-			_dbContext.Dispose();
+			await _dbContext.DisposeAsync();
 		}
 
 
