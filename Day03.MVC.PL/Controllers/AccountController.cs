@@ -2,6 +2,7 @@
 using Day03.MVC.PL.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
@@ -16,7 +17,7 @@ namespace Day03.MVC.PL.Controllers
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
-		#region Region
+		#region Sign Up
 
 		[HttpGet]
 		public IActionResult SignUp()
@@ -85,6 +86,16 @@ namespace Day03.MVC.PL.Controllers
 				ModelState.AddModelError(string.Empty, "Invalid Login");
 			}
 			return View(model);
+		}
+		#endregion
+
+		#region Sign Out
+
+		public async new Task<IActionResult> SignOut()
+		{
+			await _signInManager.SignOutAsync();
+
+			return RedirectToAction(nameof(SignIn));
 		}
 		#endregion
 	}
