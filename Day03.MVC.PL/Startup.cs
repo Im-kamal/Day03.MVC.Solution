@@ -59,7 +59,7 @@ namespace Day03.MVC.PL
 			}).AddEntityFrameworkStores<ApplicationDbContext>();	  
 
 			
-			//services.AddAuthentication();
+			services.AddAuthentication();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
