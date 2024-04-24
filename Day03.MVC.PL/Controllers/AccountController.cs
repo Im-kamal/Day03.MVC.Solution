@@ -98,5 +98,24 @@ namespace Day03.MVC.PL.Controllers
 			return RedirectToAction(nameof(SignIn));
 		}
 		#endregion
+
+		public IActionResult ForgetPassword()
+		{
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> SendResetPasswordEmail(ForgetPasswordViewModel model)
+		{
+			if(ModelState.IsValid)
+			{
+				var User =await _userManager.FindByEmailAsync(model.Email); 
+				if(User is not null)
+				{
+
+				}
+				ModelState.AddModelError(string.Empty, "There Is No Account With This Email");
+			}
+			return View(model);
+		}
 	}
 }
