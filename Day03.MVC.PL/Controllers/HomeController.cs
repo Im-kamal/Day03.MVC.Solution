@@ -1,4 +1,5 @@
 ﻿using Day03.MVC.PL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
 {
-	public class HomeController : Controller
+	[Authorize]
+	public class HomeController : Controller	
 	{
 		private readonly ILogger<HomeController> _logger;
 
@@ -28,6 +30,7 @@ namespace Day03.MVC.PL.Controllers
 			return View();
 		}
 
+		[AllowAnonymous]
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{

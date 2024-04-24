@@ -5,6 +5,7 @@ using Day03.BLL.Repositories;
 using Day03.DAL.Models;
 using Day03.MVC.PL.Helpers;
 using Day03.MVC.PL.ViweModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +18,8 @@ using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
 {
+	[Authorize]
+
 	public class EmployeeController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;

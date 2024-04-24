@@ -1,6 +1,7 @@
 ﻿using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -10,9 +11,11 @@ using System.Threading.Tasks;
 
 namespace Day03.MVC.PL.Controllers
 {
-    //Inheritance: DepartmentController is a Controller
-    //Composition: DepartmentController is a DepartmentRepositories
-    public class DepartmentController : Controller
+	//Inheritance: DepartmentController is a Controller
+	//Composition: DepartmentController is a DepartmentRepositories
+	[Authorize]
+
+	public class DepartmentController : Controller
     {
         
 		private readonly IUnitOfWork _unitOfWork;
