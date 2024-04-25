@@ -2,6 +2,7 @@
 using Day03.BLL.Interfaces;
 using Day03.BLL.Repositories;
 using Day03.MVC.PL.Helpers;
+using Day03.MVC.PL.Services.EmailSender;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Day03.MVC.PL.Extentions 
@@ -10,6 +11,7 @@ namespace Day03.MVC.PL.Extentions
 	{
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services )
 		{
+			services.AddTransient<IEmailSender, EmailSender>();
 			//services.AddScoped<IDepartmentRepositories, DepartmentRepositories>();
 			//services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 			//services.AddAutoMapper (M=>M.AddProfile(new MappingProfiles() ));
